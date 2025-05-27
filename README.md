@@ -1,19 +1,25 @@
 Ansible Role: SemaphoreUi
 =========
 
-Installation of SemaphoreUI on linux.
+Installation of open-source SemaphoreUI on linux. 
 
 Requirements
 ------------
 
-Docker
+For now, this role has only been tested on the following systems. 
+
+| Distribution | Version |  Architecture  |  Supported  |
+|:------------:|:-------:|:--------------:|:-----------:|
+|    Debian    |   12    | `arm64`, `amd64` |   yes   |
+
+
 
 Role Variables
 --------------
 
 All variables are down here, all default values are in `defaults/main.yml`
 
-All values that are not filled in are filled in by the default value. 
+If a variable is left blank, it is given the default value.
 
 ```dotenv
 semaphoreui_version: "v2.14.9"
@@ -25,22 +31,23 @@ semaphore_admin: "admin"
 semaphore_admin_name: "admin"
 semaphore_admin_email: "admin@example.com"
 semaphore_admin_password: "insecure" 
-
-
-
 ```
 
+For when you use the **Postgres** database
 ```dotenv
+postgres_user: "postgres"
+postgres_password: "insecure"
+postgres_db: "semaphore"
 ```
-For when you use the Postgres database
-```dotenv
 
+For when you use the **MySQL** database
+```dotenv
+mysql_user: "semaphore"
+mysql_password: "insecure"
+mysql_database: "semaphore"
+mysql_random_root_password: "yes"
 ```
 
-For when you use the MySQL database
-```dotenv
-```
-For when 
 Dependencies
 ------------
 
@@ -49,12 +56,41 @@ None
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+If you want to use the role without any difficulty with the default database use the following:
 
 ```yaml
 - hosts: example
   become: yes
   
+  roles:
+    - r2unit.semaphoreui
+```
+If you want to use the role with **Postgres** use the following example.
+```yaml
+- hosts: example
+  become: yes
+  
+  vars:
+    semaphore_db_type: postgres
+    postgres_user: "postgres"
+    postgres_password: "insecure"
+    postgres_db: "postgres"
+
+  roles:
+    - r2unit.semaphoreui
+```
+
+If you want to use the role with **MySQL** use the following example.
+```yaml
+- hosts: example
+  become: yes
+  vars:
+    semaphore_db_type: mysql
+    mysql_user: "semaphore"
+    mysql_password: "insecure" 
+    mysql_database: "semaphore"
+    mysql_random_root_password: "yes"
+      
   roles:
     - r2unit.semaphoreui
 ```
@@ -67,4 +103,4 @@ MIT / BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+This role is created by me for the open-source community.
