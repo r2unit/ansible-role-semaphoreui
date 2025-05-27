@@ -6,31 +6,63 @@ Installation of SemaphoreUI on linux.
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Docker
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+All variables are down here, all default values are in `defaults/main.yml`
 
+All values that are not filled in are filled in by the default value. 
+
+```dotenv
+semaphoreui_version: "v2.14.9"
+semaphore_port: "3000"
+semaphore_data_dir: ""
+semaphore_config_dir: ""
+semaphore_temp_dir: ""
+semaphore_admin: "admin"
+semaphore_admin_name: "admin"
+semaphore_admin_email: "admin@example.com"
+semaphore_admin_password: "insecure" 
+
+
+
+```
+
+```dotenv
+```
+For when you use the Postgres database
+```dotenv
+
+```
+
+For when you use the MySQL database
+```dotenv
+```
+For when 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
 
 Example Playbook
 ----------------
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```yaml
+- hosts: example
+  become: yes
+  
+  roles:
+    - r2unit.semaphoreui
+```
 
 License
 -------
 
-BSD
+MIT / BSD
 
 Author Information
 ------------------
