@@ -1,0 +1,5 @@
+---
+- name: semaphoreui
+  src: git+https://github.com/r2unit/ansible-task-semaphoreui.git
+  scm: git
+  version: "develop"

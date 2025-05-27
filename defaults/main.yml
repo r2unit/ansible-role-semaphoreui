@@ -1,0 +1,6 @@
+---
+semaphoreui_version: "v2.14.9"
+
+data_dir: /var/lib/semaphore
+config_dir: /etc/semaphore
+tmp_dir: tmp/semaphore

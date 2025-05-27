@@ -1,0 +1,50 @@
+- name: Set default database type if not provided
+  set_fact:
+    semaphore_db_type: "{{ semaphore_db_type | default('bolt') }}"
+
+- name: Determine the docker-compose template to use based on semaphore_db_type
+  set_fact:
+    compose_template: >-
+      {% if semaphore_db_type == 'bolt' %}
+      compose-bolt.yml.j2
+      {% elif semaphore_db_type == 'mysql' %}
+      compose-mysql.yml.j2
+      {% elif semaphore_db_type == 'postgres' %}
+      compose-postgres.yml.j2
+      {% else %}
+      compose-bolt.yml.j2
+      {% endif %}
+
+- name: Ensure semaphore data directory exists with correct permissions
+  file:
+    path: "{{ data_dir }}"
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: Ensure semaphore config directory exists with correct permissions
+  file:
+    path: "{{ config_dir }}"
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: Ensure semaphore tmp directory exists with correct permissions
+  file:
+    path: "{{ tmp_dir }}"
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: Deploy docker-compose file from template
+  template:
+    src: "{{ compose_template }}"
+    dest: /opt/semaphore/docker-compose.yml
+
+- name: Start SemaphoreUI using docker-compose
+  community.docker.docker_compose:
+    project_src: /opt/semaphore
+    state: present
