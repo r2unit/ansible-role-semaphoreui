@@ -1,0 +1,22 @@
+services:
+    semaphore:
+        ports:
+            - "3000:3000"
+        image: semaphoreui/semaphore:{{ semaphoreui_version }}
+        environment:
+            SEMAPHORE_DB_DIALECT: bolt
+            SEMAPHORE_ADMIN: "{{ semaphore_admin | default('admin') }}"
+            SEMAPHORE_ADMIN_PASSWORD: "{{ semaphore_admin_password | default('insecure') }}"
+            SEMAPHORE_ADMIN_NAME: "{{ admin_name | default('admin') }}"
+            SEMAPHORE_ADMIN_EMAIL: "{{ admin_email | default('admin@example.com') }}"
+            SEMAPHORE_PORT: "3000"
+            SEMAPHORE_GIT_CLIENT: "{{ git_client | default('go_git') }}"
+            ANSIBLE_HOST_KEY_CHECKING: "{{ host_key_checking | default('True') }}"
+        volumes:
+            - semaphore_data:/var/lib/semaphore
+            - semaphore_config:/etc/semaphore
+            - semaphore_tmp:/tmp/semaphore
+volumes:
+    semaphore_data:
+    semaphore_config:
+    semaphore_tmp:

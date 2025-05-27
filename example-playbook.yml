@@ -1,0 +1,9 @@
+---
+- hosts: develop
+  become: yes
+
+  vars:
+    semaphore_db_type: "bolt"
+
+    roles:
+      - r2unit.semaphoreui
