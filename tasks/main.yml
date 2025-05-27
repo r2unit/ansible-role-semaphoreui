@@ -4,13 +4,17 @@
 
 - name: Determine the docker-compose template to use based on semaphore_db_type
   set_fact:
-    compose_template: "{{ 'compose-bolt.yml.j2' if semaphore_db_type == 'bolt' else ('compose-mysql.yml.j2' if semaphore_db_type == 'mysql' else ('compose-postgres.yml.j2' if semaphore_db_type == 'postgres' else 'compose-bolt.yml.j2')) }}"
+    compose_template: >-
+      {{ 'compose-bolt.yml.j2' if semaphore_db_type == 'bolt'
+         else ('compose-mysql.yml.j2' if semaphore_db_type == 'mysql'
+         else ('compose-postgres.yml.j2' if semaphore_db_type == 'postgres'
+         else 'compose-bolt.yml.j2')) }}
 
 - name: Ensure semaphore data directory exists with correct permissions
   file:
     path: "{{ data_dir }}"
     state: directory
-    mode: '0755'
+    mode: "0755"
     owner: root
     group: root
 
@@ -18,7 +22,7 @@
   file:
     path: "{{ config_dir }}"
     state: directory
-    mode: '0755'
+    mode: "0755"
     owner: root
     group: root
 
@@ -26,7 +30,7 @@
   file:
     path: "{{ tmp_dir }}"
     state: directory
-    mode: '0755'
+    mode: "0755"
     owner: root
     group: root
 
@@ -34,7 +38,7 @@
   file:
     path: /opt/semaphore
     state: directory
-    mode: '0755'
+    mode: "0755"
     owner: root
     group: root
 
@@ -42,15 +46,40 @@
   template:
     src: "{{ compose_template }}"
     dest: /opt/semaphore/docker-compose.yml
+  register: compose_deploy
 
-- name: Start SemaphoreUI using docker-compose CLI
+- name: Check if SemaphoreUI container is running
+  shell: docker ps -q -f name=semaphore
+  register: semaphore_running
+  changed_when: false
+
+- name: Handle docker-compose file changes (restart container)
+  block:
+    - name: Bring down SemaphoreUI container if running
+      shell: docker compose down
+      args:
+        chdir: /opt/semaphore
+      when: semaphore_running.stdout != ""
+
+    - name: Prune unused docker containers
+      shell: docker container prune -f
+      when: semaphore_running.stdout != ""
+      
+    - name: Start SemaphoreUI using docker-compose CLI (after change)
+      shell: docker compose up -d
+      args:
+        chdir: /opt/semaphore
+  when: compose_deploy.changed
+
+- name: Start SemaphoreUI using docker-compose CLI if no changes detected
   shell: docker compose up -d
   args:
     chdir: /opt/semaphore
+  when: not compose_deploy.changed
 
 - name: Wait for SemaphoreUI container to be running
   shell: docker inspect --format '{{ "{{" }}.State.Running{{ "}}" }}' semaphore
-  register: container_status
+  register: container_status_final
   retries: 10
   delay: 10
-  until: container_status.stdout | trim == "true"
+  until: container_status_final.stdout | trim == "true"
