@@ -1,8 +1,10 @@
 services:
     semaphore:
+        container_name: semaphore
+        hostname: semaphore
+        image: semaphoreui/semaphore:{{ semaphoreui_version }}
         ports:
             - "3000:3000"
-        image: semaphoreui/semaphore:{{ semaphoreui_version }}
         environment:
             SEMAPHORE_DB_DIALECT: bolt
             SEMAPHORE_ADMIN: "{{ semaphore_admin | default('admin') }}"
