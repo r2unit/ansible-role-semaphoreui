@@ -1,7 +1,7 @@
-Role Name
+Ansible Role: SemaphoreUi
 =========
 
-A brief description of the role goes here.
+Installation of SemaphoreUI on linux.
 
 Requirements
 ------------

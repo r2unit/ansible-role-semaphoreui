@@ -5,14 +5,10 @@
 - name: Determine the docker-compose template to use based on semaphore_db_type
   set_fact:
     compose_template: >-
-      {% if semaphore_db_type == 'bolt' %}
-      compose-bolt.yml.j2
-      {% elif semaphore_db_type == 'mysql' %}
-      compose-mysql.yml.j2
-      {% elif semaphore_db_type == 'postgres' %}
-      compose-postgres.yml.j2
-      {% else %}
-      compose-bolt.yml.j2
+      {% if semaphore_db_type == 'bolt' -%}compose-bolt.yml.j2
+      {% elif semaphore_db_type == 'mysql' -%}compose-mysql.yml.j2
+      {% elif semaphore_db_type == 'postgres' -%}compose-postgres.yml.j2
+      {% else -%}compose-bolt.yml.j2
       {% endif %}
 
 - name: Ensure semaphore data directory exists with correct permissions
