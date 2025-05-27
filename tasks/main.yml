@@ -1,39 +1,3 @@
-- name: Set default database type if not provided
-  set_fact:
-    semaphore_db_type: "{{ semaphore_db_type | default('bolt') }}"
-
-- name: Determine the compose template to use based on semaphore_db_type
-  set_fact:
-    compose_template: >-
-      {{ 'compose-bolt.yml.j2' if semaphore_db_type == 'bolt'
-         else ('compose-mysql.yml.j2' if semaphore_db_type == 'mysql'
-         else ('compose-postgres.yml.j2' if semaphore_db_type == 'postgres'
-         else 'compose-bolt.yml.j2')) }}
-
-- name: Ensure semaphore data directory exists with correct permissions
-  file:
-    path: "{{ semaphore_data_dir }}"
-    state: directory
-    mode: "0755"
-    owner: root
-    group: root
-
-- name: Ensure semaphore config directory exists with correct permissions
-  file:
-    path: "{{ semaphore_config_dir }}"
-    state: directory
-    mode: "0755"
-    owner: root
-    group: root
-
-- name: Ensure semaphore tmp directory exists with correct permissions
-  file:
-    path: "{{ semaphore_tmp_dir }}"
-    state: directory
-    mode: "0755"
-    owner: root
-    group: root
-
 - name: Ensure the {{ semaphore_compose_dir }} directory exists
   file:
     path: "{{ semaphore_compose_dir }}"
@@ -42,10 +6,10 @@
     owner: root
     group: root
 
-- name: Deploy docker-compose file from template
+- name: Deploy compose file from template
   template:
     src: "{{ compose_template }}"
-    dest: {{ semaphore_compose_dir }}docker-compose.yml
+    dest: "{{ semaphore_compose_dir }}/docker-compose.yml"
   register: compose_deploy
 
 - name: Check if SemaphoreUI container is running
@@ -58,23 +22,23 @@
     - name: Bring down SemaphoreUI container if running
       shell: docker compose down
       args:
-        chdir: {{ semaphore_compose_dir }}
+        chdir: "{{ semaphore_compose_dir }}"
       when: semaphore_running.stdout != ""
 
     - name: Prune unused docker containers
       shell: docker container prune -f
       when: semaphore_running.stdout != ""
       
-    - name: Start SemaphoreUI using docker-compose CLI (after change)
+    - name: Start SemaphoreUI using docker CLI (after change)
       shell: docker compose up -d
       args:
-        chdir: {{ semaphore_compose_dir }}
+        chdir: "{{ semaphore_compose_dir }}"
   when: compose_deploy.changed
 
-- name: Start SemaphoreUI using docker-compose CLI if no changes detected
+- name: Start SemaphoreUI using docker CLI if no changes detected
   shell: docker compose up -d
   args:
-    chdir: {{ semaphore_compose_dir }}
+    chdir: "{{ semaphore_compose_dir }}"
   when: not compose_deploy.changed
 
 - name: Wait for SemaphoreUI container to be running
