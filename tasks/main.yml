@@ -43,7 +43,7 @@
     src: "{{ compose_template }}"
     dest: /opt/semaphore/docker-compose.yml
 
-- name: Start SemaphoreUI using docker-compose
-  community.docker.docker_compose:
-    project_src: /opt/semaphore
-    state: present
+- name: Start SemaphoreUI using docker-compose CLI
+  shell: docker compose up -d
+  args:
+    chdir: /opt/semaphore
