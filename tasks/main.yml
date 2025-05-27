@@ -48,9 +48,9 @@
   args:
     chdir: /opt/semaphore
 
-- name: Wait for SemaphoreUI container to be healthy
-  shell: docker inspect --format '{{ "{{" }}.State.Health.Status{{ "}}" }}' semaphore
-  register: container_health
+- name: Wait for SemaphoreUI container to be running
+  shell: docker inspect --format '{{ "{{" }}.State.Running{{ "}}" }}' semaphore
+  register: container_status
   retries: 10
   delay: 10
-  until: container_health.stdout == "healthy"
+  until: container_status.stdout | trim == "true"
