@@ -47,3 +47,10 @@
   shell: docker compose up -d
   args:
     chdir: /opt/semaphore
+
+- name: Wait for SemaphoreUI container to be healthy
+  shell: docker inspect --format '{{ "{{" }}.State.Health.Status{{ "}}" }}' semaphore
+  register: container_health
+  retries: 10
+  delay: 10
+  until: container_health.stdout == "healthy"
