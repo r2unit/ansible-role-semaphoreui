@@ -2,7 +2,7 @@
   set_fact:
     semaphore_db_type: "{{ semaphore_db_type | default('bolt') }}"
 
-- name: Determine the docker-compose template to use based on semaphore_db_type
+- name: Determine the compose template to use based on semaphore_db_type
   set_fact:
     compose_template: >-
       {{ 'compose-bolt.yml.j2' if semaphore_db_type == 'bolt'
@@ -12,7 +12,7 @@
 
 - name: Ensure semaphore data directory exists with correct permissions
   file:
-    path: "{{ data_dir }}"
+    path: "{{ semaphore_data_dir }}"
     state: directory
     mode: "0755"
     owner: root
@@ -20,7 +20,7 @@
 
 - name: Ensure semaphore config directory exists with correct permissions
   file:
-    path: "{{ config_dir }}"
+    path: "{{ semaphore_config_dir }}"
     state: directory
     mode: "0755"
     owner: root
@@ -28,15 +28,15 @@
 
 - name: Ensure semaphore tmp directory exists with correct permissions
   file:
-    path: "{{ tmp_dir }}"
+    path: "{{ semaphore_tmp_dir }}"
     state: directory
     mode: "0755"
     owner: root
     group: root
 
-- name: Ensure the /opt/semaphore directory exists
+- name: Ensure the {{ semaphore_compose_dir }} directory exists
   file:
-    path: /opt/semaphore
+    path: "{{ semaphore_compose_dir }}"
     state: directory
     mode: "0755"
     owner: root
@@ -45,7 +45,7 @@
 - name: Deploy docker-compose file from template
   template:
     src: "{{ compose_template }}"
-    dest: /opt/semaphore/docker-compose.yml
+    dest: {{ semaphore_compose_dir }}docker-compose.yml
   register: compose_deploy
 
 - name: Check if SemaphoreUI container is running
@@ -53,12 +53,12 @@
   register: semaphore_running
   changed_when: false
 
-- name: Handle docker-compose file changes (restart container)
+- name: Handle compose file changes (restart container)
   block:
     - name: Bring down SemaphoreUI container if running
       shell: docker compose down
       args:
-        chdir: /opt/semaphore
+        chdir: {{ semaphore_compose_dir }}
       when: semaphore_running.stdout != ""
 
     - name: Prune unused docker containers
@@ -68,13 +68,13 @@
     - name: Start SemaphoreUI using docker-compose CLI (after change)
       shell: docker compose up -d
       args:
-        chdir: /opt/semaphore
+        chdir: {{ semaphore_compose_dir }}
   when: compose_deploy.changed
 
 - name: Start SemaphoreUI using docker-compose CLI if no changes detected
   shell: docker compose up -d
   args:
-    chdir: /opt/semaphore
+    chdir: {{ semaphore_compose_dir }}
   when: not compose_deploy.changed
 
 - name: Wait for SemaphoreUI container to be running
