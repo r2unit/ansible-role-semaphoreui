@@ -27,10 +27,11 @@ services:
 {#            SEMAPHORE_TELEGRAM_TOKEN: "{{ semaphore_telegram_token }}"#}
 {#            SEMAPHORE_SLACK_ALERT: "{{ semaphore_slack_alert | default('False') }}"#}
 {#            SEMAPHORE_SLACK_URL: "{{ semaphore_slack_url }}"#}
+            SEMAPHORE_ROCKETCHAT_ALERT: {{ semaphore_rocketchat_alert | default('False') }}
         volumes:
-            - semaphore_data:/var/lib/semaphore
-            - semaphore_config:/etc/semaphore
-            - semaphore_tmp:/tmp/semaphore
+            - semaphore_data:{{ semaphore_data_dir }}
+            - semaphore_config:{{ semaphore_config_dir }}
+            - semaphore_tmp:{{ semaphore_temp_dir }}
 volumes:
     semaphore_data:
     semaphore_config:

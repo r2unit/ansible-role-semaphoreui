@@ -1,6 +1,11 @@
 ---
 semaphoreui_version: "v2.14.9"
 
-data_dir: /var/lib/semaphore
-config_dir: /etc/semaphore
-tmp_dir: tmp/semaphore
+semaphore_data_dir: /var/lib/semaphore
+semaphore_config_dir: /etc/semaphore
+semaphore_temp_dir: tmp/semaphore
+
+semaphore_network: semaphore_network
+
+semaphore_postgres: /var/lib/postgresql/data
+semaphore_mysql: /var/lib/mysql
