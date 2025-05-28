@@ -45,7 +45,7 @@
 - name: Copy compose into "{{ semaphore_compose_dir }}/compose.yml"
   template:
     src: "{{ compose_template }}"
-    dest: "{{ semaphore_compose_dir }}compose.yml"
+    dest: "{{ semaphore_compose_dir }}/compose.yml"
   register: compose_deploy
 
 - name: Check if SemaphoreUI container is running
