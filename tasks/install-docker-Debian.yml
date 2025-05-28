@@ -1,0 +1,50 @@
+- name: Ensure apt cache is updated
+  apt:
+    update_cache: yes
+  become: yes
+
+- name: Install prerequisites for Docker installation
+  apt:
+    name:
+      - ca-certificates
+      - curl
+    state: present
+  become: yes
+
+- name: Create directory for APT keyrings
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: Download Docker’s official GPG key if not exists
+  get_url:
+    url: https://download.docker.com/linux/debian/gpg
+    dest: /etc/apt/keyrings/docker.asc
+    mode: '0644'
+    force: no
+  become: yes
+
+- name: Add Docker APT repository
+  apt_repository:
+    repo: "deb [arch={{ ansible_architecture | regex_replace('x86_64', 'amd64') }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+    filename: docker
+    state: present
+  become: yes
+
+- name: Update apt cache after adding Docker repository
+  apt:
+    update_cache: yes
+  become: yes
+
+- name: Install Docker packages
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+  become: yes

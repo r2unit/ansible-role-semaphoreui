@@ -3,6 +3,9 @@ Ansible Role: SemaphoreUi
 
 Installation of open-source SemaphoreUI on linux. 
 
+```bash
+ansible-galaxy role install r2unit.semaphoreui
+```
 Requirements
 ------------
 
