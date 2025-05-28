@@ -1,6 +1,6 @@
 - name: Set default database type if not provided
   set_fact:
-    semaphore_db_type: "{{ semaphore_db_type | default('bolt') }}"
+    semaphore_db_type: "{{ semaphore_db_type }}"
 
 - name: Determine the compose template to use based on semaphore_db_type
   set_fact:
