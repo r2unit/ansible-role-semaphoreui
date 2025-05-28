@@ -1,0 +1,7 @@
+# Intellij Stuff..
+.idea
+
+# Testing stuff
+inventory.ini
+example-playbook.yml
+./example-playbook.yml
