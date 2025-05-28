@@ -10,3 +10,5 @@ semaphore_network: semaphore_network
 
 semaphore_postgres: /var/lib/postgresql/data
 semaphore_mysql: /var/lib/mysql
+
+docker_version:

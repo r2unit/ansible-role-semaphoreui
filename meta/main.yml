@@ -4,7 +4,7 @@ dependencies: []
 galaxy_info:
   role_name: semaphoreui
   author: r2unit
-  description: SemaphoreUI Installation and Configuation for Linux with Docker
+  description: SemaphoreUI Installation and Configuration for Linux with Docker
   company: "Nerdpitch"
   license: "license (BSD, MIT)"
   min_ansible_version: 2.10
