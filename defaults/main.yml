@@ -4,7 +4,7 @@ semaphoreui_version: "v2.14.9"
 semaphore_compose_dir: /opt/semaphore
 semaphore_data_dir: /var/lib/semaphore
 semaphore_config_dir: /etc/semaphore
-semaphore_tmp_dir: tmp/semaphore
+semaphore_tmp_dir: /tmp/semaphore
 
 semaphore_network: semaphore_network
 
