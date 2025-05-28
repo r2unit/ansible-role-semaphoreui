@@ -29,9 +29,9 @@ services:
 {#            SEMAPHORE_SLACK_URL: "{{ semaphore_slack_url }}"#}
             SEMAPHORE_ROCKETCHAT_ALERT: {{ semaphore_rocketchat_alert | default('False') }}
         volumes:
-            - semaphore_data:{{ semaphore_data_dir }}
-            - semaphore_config:{{ semaphore_config_dir }}
-            - semaphore_tmp:{{ semaphore_temp_dir }}
+            - semaphore_data:/var/lib/semaphore
+            - semaphore_config:/etc/semaphore
+            - semaphore_tmp:/tmp/semaphore
 volumes:
     semaphore_data:
     semaphore_config:
