@@ -1,4 +1,7 @@
 ---
+# Installation of Docker
+- ansible.builtin.include_tasks: install-docker-Debian.yml
+  when: ansible_os_family == 'Debian'
 
 # Dynamic setup & install
 - ansible.builtin.include_tasks: setup-Debian.yml
