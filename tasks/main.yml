@@ -40,17 +40,11 @@
     state: directory
     mode: '0755'
 
-#- name: Deploy docker-compose file from template
-#  template:
-#    src: "{{ compose_template }}"
-#    dest: "{{ semaphore_compose_dir }}/docker-compose.yml"
-#  register: compose_deploy
-
-- name: Deploy Docker Compose file from dynamic template
+- name: Deploy docker compose file from template
   template:
-    src: "{{ semaphore_compose_template | default('compose.bolt.yml.j2') }}"
+    src: "{{ compose_template }}"
     dest: "{{ semaphore_compose_dir }}/docker-compose.yml"
-    mode: '0644'
+  register: compose_deploy
 
 - name: Check if SemaphoreUI container is running
   shell: docker ps -q -f name=semaphore
