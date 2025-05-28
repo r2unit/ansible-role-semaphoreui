@@ -11,7 +11,10 @@ galaxy_info:
   platforms:
     - name: Debian
       versions:
-        - all
+        - bookworm
   galaxy_tags:
     - system
     - semaphoreui
+    - ci
+    - cd
+    - ci/cd
