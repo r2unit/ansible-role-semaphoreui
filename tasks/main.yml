@@ -10,7 +10,7 @@
          else ('compose-postgres.yml.j2' if semaphore_db_type == 'postgres'
          else 'compose-bolt.yml.j2')) }}
 
-- name: Ensure semaphore data directory exists with correct permissions
+- name: Ensure "{{ semaphore_data_dir }}" directory exists.
   file:
     path: "{{ semaphore_data_dir }}"
     state: directory
@@ -18,7 +18,7 @@
     owner: root
     group: root
 
-- name: Ensure semaphore config directory exists with correct permissions
+- name: Ensure "{{ semaphore_config_dir }}" directory exists.
   file:
     path: "{{ semaphore_config_dir }}"
     state: directory
@@ -26,7 +26,7 @@
     owner: root
     group: root
 
-- name: Ensure semaphore tmp directory exists with correct permissions
+- name: Ensure "{{ semaphore_tmp_dir }}" directory exists.
   file:
     path: "{{ semaphore_tmp_dir }}"
     state: directory
@@ -34,48 +34,48 @@
     owner: root
     group: root
 
-- name: Ensure semaphore compose directory exists
+- name: Ensure the "{{ semaphore_compose_dir }}" directory exists.
   file:
     path: "{{ semaphore_compose_dir }}"
     state: directory
     mode: '0755'
 
-- name: Deploy docker compose file from template
+- name: Copy compose from "{{ compose_template }}".
   template:
     src: "{{ compose_template }}"
     dest: "{{ semaphore_compose_dir }}/docker-compose.yml"
   register: compose_deploy
 
-- name: Check if SemaphoreUI container is running
+- name: Check if image semaphore is running.
   shell: docker ps -q -f name=semaphore
   register: semaphore_running
   changed_when: false
 
-- name: Handle compose file changes (restart container)
+- name: Handle compose file if state is UP.
   block:
-    - name: Bring down SemaphoreUI container if running
+    - name: Bring down semaphore container if running.
       shell: docker compose down
       args:
         chdir: "{{ semaphore_compose_dir }}"
       when: semaphore_running.stdout != ""
 
-    - name: Prune unused docker containers
+    - name: Prune unused docker containers.
       shell: docker container prune -f
       when: semaphore_running.stdout != ""
 
-    - name: Start SemaphoreUI using docker CLI (after change)
+    - name: Start semaphore using docker.
       shell: docker compose up -d
       args:
         chdir: "{{ semaphore_compose_dir }}"
   when: compose_deploy.changed
 
-- name: Start SemaphoreUI using docker CLI if no changes detected
+- name: Start semaphore using docker.
   shell: docker compose up -d
   args:
     chdir: "{{ semaphore_compose_dir }}"
   when: not compose_deploy.changed
 
-- name: Wait for SemaphoreUI container to be running
+- name: Wait for semaphore container to be running.
   shell: docker inspect --format '{{ "{{" }}.State.Running{{ "}}" }}' semaphore
   register: container_status_final
   retries: 10
