@@ -1,5 +1,8 @@
 - hosts: develop
   become: yes
 
+  vars:
+    semaphore_db_type: mysql
+
   roles:
     - r2unit.semaphoreui
