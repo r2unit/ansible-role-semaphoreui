@@ -1,6 +1,6 @@
 - name: Set default database type if not provided
   set_fact:
-    semaphore_db_type: "{{ semaphore_db_type }}"
+    semaphore_db_type: "{{ semaphore_db_type | default('bolt') }}"
 
 - name: Determine the compose template to use based on semaphore_db_type
   set_fact:
@@ -10,7 +10,7 @@
          else ('compose-postgres.yml.j2' if semaphore_db_type == 'postgres'
          else 'compose-bolt.yml.j2')) }}
 
-- name: Ensure the "{{ semaphore_data_dir }}" directory exists.
+- name: Ensure semaphore data directory exists with correct permissions
   file:
     path: "{{ semaphore_data_dir }}"
     state: directory
@@ -18,7 +18,7 @@
     owner: root
     group: root
 
-- name: Ensure the "{{ semaphore_config_dir }}" directory exists.
+- name: Ensure semaphore config directory exists with correct permissions
   file:
     path: "{{ semaphore_config_dir }}"
     state: directory
@@ -26,7 +26,7 @@
     owner: root
     group: root
 
-- name: Ensue the "{{ semaphore_tmp_dir }}" directory exists.
+- name: Ensure semaphore tmp directory exists with correct permissions
   file:
     path: "{{ semaphore_tmp_dir }}"
     state: directory
@@ -42,10 +42,10 @@
     owner: root
     group: root
 
-- name: Copy compose into "{{ semaphore_compose_dir }}/compose.yml"
+- name: Deploy docker-compose file from template
   template:
     src: "{{ compose_template }}"
-    dest: /opt/semaphore/compose.yml
+    dest: "{{ semaphore_compose_dir }}docker-compose.yml"
   register: compose_deploy
 
 - name: Check if SemaphoreUI container is running

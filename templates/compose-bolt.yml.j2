@@ -11,23 +11,8 @@ services:
             SEMAPHORE_ADMIN_PASSWORD: "{{ semaphore_admin_password | default('insecure') }}"
             SEMAPHORE_ADMIN_NAME: "{{ semaphore_admin_name | default('admin') }}"
             SEMAPHORE_ADMIN_EMAIL: "{{ semaphore_admin_email | default('admin@example.com') }}"
-            SEMAPHORE_TOTP_ENABLED: "{{ semaphore_totp_enabled | default('False') }}"
-            SEMAPHORE_TOTP_ALLOW_RECOVERY: "{{ semaphore_totp_allow_recovery | default('False') }}"
             SEMAPHORE_PORT: "{{ semaphore_port | default('3000') }}"
             SEMAPHORE_GIT_CLIENT: "{{ git_client | default('go_git') }}"
-            ANSIBLE_HOST_KEY_CHECKING: "{{ host_key_checking | default('True') }}"
-            SEMAPHORE_PASSWORD_LOGIN_DISABLED: "{{ semaphore_password_login_disabled | default('False') }}"
-            SEMAPHORE_NON_ADMIN_CAN_CREATE_PROJECT: "{{ semaphore_non_admin_can_create_project | default('False') }}"
-{#            SEMAPHORE_WEB_ROOT: "{{  semaphore_web_root }}"#}
-{#            SEMAPHORE_MAX_TASKS_PER_TEMPLATE:#}
-{#            SEMAPHORE_MAX_PARALLEL_TASKS:#}
-{#            MAX_TASK_DURATION_SEC:#}
-{#            SEMAPHORE_TELEGRAM_ALERT: "{{ semaphore_telegram_alert | default('False') }}"#}
-{#            SEMAPHORE_TELEGRAM_CHAT: "{{ semaphore_telegram_chat }}"#}
-{#            SEMAPHORE_TELEGRAM_TOKEN: "{{ semaphore_telegram_token }}"#}
-{#            SEMAPHORE_SLACK_ALERT: "{{ semaphore_slack_alert | default('False') }}"#}
-{#            SEMAPHORE_SLACK_URL: "{{ semaphore_slack_url }}"#}
-            SEMAPHORE_ROCKETCHAT_ALERT: {{ semaphore_rocketchat_alert | default('False') }}
         volumes:
             - semaphore_data:/var/lib/semaphore
             - semaphore_config:/etc/semaphore
