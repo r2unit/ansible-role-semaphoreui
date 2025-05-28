@@ -45,7 +45,7 @@
 - name: Deploy docker-compose file from template
   template:
     src: "{{ compose_template }}"
-    dest: "{{ semaphore_compose_dir }}docker-compose.yml"
+    dest: "{{ semaphore_compose_dir }}/docker-compose.yml"
   register: compose_deploy
 
 - name: Check if SemaphoreUI container is running
