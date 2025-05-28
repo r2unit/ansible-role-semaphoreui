@@ -34,19 +34,23 @@
     owner: root
     group: root
 
-- name: Ensure the "{{ semaphore_compose_dir }}" directory exists
+- name: Ensure semaphore compose directory exists
   file:
     path: "{{ semaphore_compose_dir }}"
     state: directory
-    mode: "0755"
-    owner: root
-    group: root
+    mode: '0755'
 
-- name: Deploy docker-compose file from template
+#- name: Deploy docker-compose file from template
+#  template:
+#    src: "{{ compose_template }}"
+#    dest: "{{ semaphore_compose_dir }}/docker-compose.yml"
+#  register: compose_deploy
+
+- name: Deploy Docker Compose file from dynamic template
   template:
-    src: "{{ compose_template }}"
+    src: "{{ semaphore_compose_template | default('compose.bolt.yml.j2') }}"
     dest: "{{ semaphore_compose_dir }}/docker-compose.yml"
-  register: compose_deploy
+    mode: '0644'
 
 - name: Check if SemaphoreUI container is running
   shell: docker ps -q -f name=semaphore
